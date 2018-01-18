@@ -1,0 +1,14 @@
+BASE_TAG = '{http://arxiv.org/OAI/arXiv/}'
+BASE_URL = 'http://arXiv.org/oai2'
+BASE_TAG_OAI = '{http://www.openarchives.org/OAI/2.0/}'
+TAG_ID = BASE_TAG + 'id'
+TAG_FORENAMES = BASE_TAG + 'forenames'
+TAG_AFFILIATION = BASE_TAG + 'affiliation'
+TAG_RESUMPTION_TOKEN = BASE_TAG_OAI + 'resumptionToken'
+TAG_SET_SPEC = BASE_TAG_OAI + 'set'
+AWS_S3_BUCKET = 'XXX' # replace XXX with bucket name
+DB_NAME = 'gendergap_db'
+DB_HOST = 'XXX'  # replace XXX with database host
+DB_PORT = 5432
+DB_USER = 'gendergap_user'
+DB_PW = 'XXX'  # replace XXX with password
