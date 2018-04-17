@@ -7,9 +7,9 @@ import pandas as pd
 import psycopg2
 from sqlalchemy import create_engine
 
+from config import AWS_S3_BUCKET, DB_USER, DB_PW, DB_HOST, DB_PORT, DB_NAME
 from db_constants import COLUMNS_ARTICLES, COLUMNS_AUTHORSHIP, COLUMNS_AFFILIATIONS, TABLE_ARTICLE, \
     TABLE_AUTHORSHIP, TABLE_AFFILIATION
-from config import AWS_S3_BUCKET, DB_USER, DB_PW, DB_HOST, DB_PORT, DB_NAME
 from naive_s3_lock import NaiveS3Lock
 
 LOCAL_BUFFER_DIR = "/tmp/"
@@ -47,9 +47,9 @@ def import_json_dump_into_db(filename):
 
     df_articles = prepare_articles_df(df_filtered)
 
-    df_authors_and_affiliations = prepare_authors_df(df_filtered)
+    df_authors_and_affiliations = prepare_authors_and_affiliations_df(df_filtered)
 
-    df_authors = df_authors_and_affiliations[COLUMNS_AUTHORSHIP]
+    df_authors = prepare_authors_df(df_authors_and_affiliations)
 
     df_affiliations = prepare_affiliations(df_authors_and_affiliations)
 
@@ -101,7 +101,45 @@ def add_expected_columns(df, columns):
     return data_frame
 
 
-def prepare_authors_df(df):
+def ignore_initials(s):
+    if len(s) > 1:
+        return s
+    else:
+        return ''
+
+
+def get_item_or_filler(l, pos, filler=''):
+    """
+    Return item of list 'l' at position 'pos' if it exists, otherwise return the 'filler' element.
+    Example:
+        get_item_or_filler(['a', 'b', 'c'], 1)
+        >>>'b'
+        get_item_or_filler(['a', 'b', 'c'], 4)
+        >>>''
+        get_item_or_filler(['a', 'b', 'c'], 4, 'e')
+        >>>'e'
+    """
+    if len(l) > pos:
+        return l[pos]
+    else:
+        return filler
+
+
+def extract_first_and_middle_name(s):
+    if s is not None:
+        s = str(s)
+        words = re.findall("[\w'-]+", s.lower())  # extract all words; don't remove '-'
+        first_name = get_item_or_filler(words, 0)
+        first_name = ignore_initials(first_name)
+        middle_name = get_item_or_filler(words, 1)
+        middle_name = ignore_initials(middle_name)
+    else:
+        first_name, middle_name = '', ''
+
+    return first_name, middle_name
+
+
+def prepare_authors_and_affiliations_df(df):
     """takes DF with complex column 'authors' and returns a flattened DF"""
     df.authors = df.authors.map(lambda x: x if isinstance(x, list) else [x])
     authors_dict = df[['identifier', 'authors']].to_dict(orient='records')
@@ -112,6 +150,12 @@ def prepare_authors_df(df):
             flat.append({**{'article_id': item['identifier']}, **{'author_pos': i + 1}, **authors[i]})
     df_authors = pd.DataFrame(flat)
     return add_expected_columns(df_authors, set(COLUMNS_AUTHORSHIP + COLUMNS_AFFILIATIONS))
+
+
+def prepare_authors_df(df_authors_and_affiliations):
+    df_authors = df_authors_and_affiliations[COLUMNS_AUTHORSHIP]
+    df_authors['first_name'], df_authors['middle_name'] = zip(*df_authors.forenames.map(extract_first_and_middle_name))
+    return df_authors
 
 
 def prepare_affiliations(df):

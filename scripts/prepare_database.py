@@ -53,6 +53,8 @@ def create_tables_for_arxiv():
             keyname VARCHAR(255) NOT NULL, -- max found 52
             forenames VARCHAR(255), -- max found 64
             suffix VARCHAR(10), -- max found 3
+            first_name VARCHAR(255),
+            middle_name VARCHAR(255),
             CONSTRAINT authorship_pk PRIMARY KEY (article_id, author_pos),
             FOREIGN KEY (article_id)
                 REFERENCES arxiv_articles (identifier)
@@ -109,7 +111,7 @@ def create_database(database_name):
                 OWNER = %s
                 ENCODING = 'UTF8'
                 CONNECTION LIMIT = -1
-            """ % (database_name, DB_ADMIN_USER))
+            """, database_name, DB_ADMIN_USER)
         cur.close()
         conn.set_isolation_level(ISOLATION_LEVEL_READ_COMMITTED)
     except (Exception, psycopg2.DatabaseError) as error:
