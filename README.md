@@ -88,13 +88,11 @@ Added scripts and dependencies:
 
 ```
 # add our scripts to the zip from `aws-lambda-py3.6-pandas-numpy`
-cd ${BASE_DIR}/icsu_gender_gap_arxiv/
+cd ${BASE_DIR}/arxiv/
 zip -ur ${BASE_DIR}/aws-lambda-py3.6-pandas-numpy/lambda.zip scripts/import_file_to_db.py
-zip -ur ${BASE_DIR}/aws-lambda-py3.6-pandas-numpy/lambda.zip scripts/prepare_database.py
-zip -ur ${BASE_DIR}/aws-lambda-py3.6-pandas-numpy/lambda.zip scripts/naive_s3_lock.py
+zip -ur ${BASE_DIR}/aws-lambda-py3.6-pandas-numpy/lambda.zip naive_s3_lock.py
 zip -ur ${BASE_DIR}/aws-lambda-py3.6-pandas-numpy/lambda.zip config.py
-zip -ur ${BASE_DIR}/aws-lambda-py3.6-pandas-numpy/lambda.zip scripts/db_utils.py
-zip -ur ${BASE_DIR}/aws-lambda-py3.6-pandas-numpy/lambda.zip config_db_admin.py
+zip -ur ${BASE_DIR}/aws-lambda-py3.6-pandas-numpy/lambda.zip db_constants.py
 zip -ur ${BASE_DIR}/aws-lambda-py3.6-pandas-numpy/lambda.zip scripts/__init__.py
 # add dependency psycopg2
 cp -R ${BASE_DIR}/awslambda-psycopg2/with_ssl_support/psycopg2-3.6/ /tmp/psycopg2
