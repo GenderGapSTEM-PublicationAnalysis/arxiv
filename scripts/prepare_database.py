@@ -5,6 +5,7 @@ from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT, ISOLATION_LEVEL_READ
 
 from config import DB_HOST, DB_PORT, DB_USER, DB_PW, DB_NAME
 from config_db_admin import DB_ADMIN_DB_NAME, DB_ADMIN_USER, DB_ADMIN_PW
+from db_helpers import execute_commands
 
 
 def create_non_admin_user():
@@ -77,7 +78,7 @@ def create_tables_for_arxiv():
                 ON UPDATE CASCADE 
                 ON DELETE CASCADE
         )
-        """
+        """,
         """
         CREATE INDEX article_id_aff_idx
             ON public.arxiv_affiliations (article_id)
@@ -116,20 +117,6 @@ def create_database(database_name):
         conn.set_isolation_level(ISOLATION_LEVEL_READ_COMMITTED)
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
-    finally:
-        if conn is not None:
-            conn.close()
-
-
-def execute_commands(host, port, database, user, password, commands):
-    conn = None
-    try:
-        conn = psycopg2.connect(host=host, port=port, database=database, user=user, password=password)
-        cur = conn.cursor()
-        for command in commands:
-            cur.execute(command)
-        cur.close()
-        conn.commit()
     finally:
         if conn is not None:
             conn.close()

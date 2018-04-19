@@ -180,27 +180,6 @@ def apply_changes_to_db(ids, df_articles, df_authors, df_affiliations):
     insert_into_table(df_affiliations, TABLE_AFFILIATION, COLUMNS_AFFILIATIONS)
 
 
-def insert_into_table(df, table_name, columns):
-    """Inspired by: https://stackoverflow.com/a/47984180/7740194"""
-
-    df_ordered = df[columns]  # ensure column order
-    s = datetime.now()
-
-    conn = ENGINE.raw_connection()
-    with conn.cursor() as cur:
-        output = io.StringIO()
-        df_ordered.to_csv(output, index=False)
-        output.seek(0)
-        # contents = output.getvalue()
-
-        cols = ', '.join([f'{col}' for col in columns])
-        sql = f'COPY {table_name} ({cols}) FROM STDIN WITH (FORMAT CSV, HEADER TRUE)'
-        cur.copy_expert(sql, output)
-        count = cur.rowcount
-    conn.commit()
-    print('  {} elapsed for insertion of {} rows into table {}'.format(datetime.now() - s, count, table_name))
-
-
 def delete_from_db(ids):
     s = datetime.now()
 
@@ -262,3 +241,24 @@ def lambda_handler(event, context):
 
 if __name__ == '__main__':
     do_import()
+
+
+def insert_into_table(df, table_name, columns):
+    """Inspired by: https://stackoverflow.com/a/47984180/7740194"""
+
+    df_ordered = df[columns]  # ensure column order
+    s = datetime.now()
+
+    conn = ENGINE.raw_connection()
+    with conn.cursor() as cur:
+        output = io.StringIO()
+        df_ordered.to_csv(output, index=False)
+        output.seek(0)
+        # contents = output.getvalue()
+
+        cols = ', '.join([f'{col}' for col in columns])
+        sql = f'COPY {table_name} ({cols}) FROM STDIN WITH (FORMAT CSV, HEADER TRUE)'
+        cur.copy_expert(sql, output)
+        count = cur.rowcount
+    conn.commit()
+    print('  {} elapsed for insertion of {} rows into table {}'.format(datetime.now() - s, count, table_name))
