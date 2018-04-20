@@ -65,21 +65,16 @@ Checked out projects from github where someone had already built the libraries.
 
 ### Creation of the AWS Lambda zip-file
 
-Cloned the project `aws-lambda-py3.6-pandas-numpy` alongside this project:
+Cloned the projects `aws-lambda-py3.6-pandas-numpy` and `awslambda-psycopg2` alongside this project:
 ```
-BASE_DIR=~/Development/GenderGap
+BASE_DIR=<path/to/directory/containing/this/project>
 cd ${BASE_DIR}
 git clone https://github.com/pbegle/aws-lambda-py3.6-pandas-numpy.git
+git clone https://github.com/jkehler/awslambda-psycopg2.git
 ```
 
 
-Cloned the project `awslambda-psycopg2` alongside this project:
-```
-cd ${BASE_DIR}
-git clone git clone https://github.com/jkehler/awslambda-psycopg2.git
-```
-
-Activated the virtualenv of this project (!):
+Activated the virtualenv of this project:
 ```
 workon <name_of_virtualenv>
 ```
