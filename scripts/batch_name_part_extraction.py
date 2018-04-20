@@ -40,7 +40,7 @@ def build_tmp_table(df, conn):
 
     with conn.cursor() as cursor:
         output = io.StringIO()
-        df.to_csv(output, index=False)
+        df.to_csv(output, index=False, quoting=1)
         output.seek(0)
         table_name = 'arxiv_forenames_tmp'
         cols = ', '.join([f'{col}' for col in df.columns])
