@@ -4,20 +4,23 @@ import re
 
 
 def ignore_initials(s):
+    if s is None:
+        return s
+
     if s.endswith('.') or len(s) <= 1:  # Russian initials like 'Yu. or 'H-K.', or regular initial without '.'
-        return ''
+        return None
     else:
         return s
 
 
-def get_item_or_filler(l, pos, filler=''):
+def get_item_or_filler(l, pos, filler=None):
     """
     Return item of list 'l' at position 'pos' if it exists, otherwise return the 'filler' element.
     Example:
         get_item_or_filler(['a', 'b', 'c'], 1)
         >>>'b'
         get_item_or_filler(['a', 'b', 'c'], 4)
-        >>>''
+        >>>None
         get_item_or_filler(['a', 'b', 'c'], 4, 'e')
         >>>'e'
     """
@@ -36,7 +39,7 @@ def extract_first_and_middle_name(forenames, separator=None):
         middle_name = get_item_or_filler(words, 1)
         middle_name = ignore_initials(middle_name)
     else:
-        first_name, middle_name = '', ''
+        first_name, middle_name = None, None
 
     return first_name, middle_name
 
