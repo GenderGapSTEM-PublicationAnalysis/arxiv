@@ -87,6 +87,7 @@ cd ${BASE_DIR}/arxiv/
 zip -ur ${BASE_DIR}/aws-lambda-py3.6-pandas-numpy/lambda.zip scripts/import_file_to_db.py
 zip -ur ${BASE_DIR}/aws-lambda-py3.6-pandas-numpy/lambda.zip naive_s3_lock.py
 zip -ur ${BASE_DIR}/aws-lambda-py3.6-pandas-numpy/lambda.zip config.py
+zip -ur ${BASE_DIR}/aws-lambda-py3.6-pandas-numpy/lambda.zip helpers.py
 zip -ur ${BASE_DIR}/aws-lambda-py3.6-pandas-numpy/lambda.zip db_constants.py
 zip -ur ${BASE_DIR}/aws-lambda-py3.6-pandas-numpy/lambda.zip scripts/__init__.py
 # add dependency psycopg2
